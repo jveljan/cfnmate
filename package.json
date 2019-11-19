@@ -1,0 +1,43 @@
+{
+  "name": "cfnmate",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/main.js",
+  "bin": "bin/cfnmate",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "mocha -r ts-node/register",
+    "test:ts": "mocha -r ts-node/register test/*.ts",
+    "test:js": "mocha test/*.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "archiver": "^3.1.1",
+    "aws-sdk": "^2.570.0",
+    "chalk": "^3.0.0",
+    "commander": "^4.0.1",
+    "tmp-promise": "^2.0.2",
+    "yaml-cfn": "^0.2.3"
+  },
+  "devDependencies": {
+    "@types/archiver": "^3.0.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.5",
+    "@types/uuid": "^3.4.6",
+    "mocha": "^6.2.2",
+    "rollup": "^1.27.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "ts-node": "^8.5.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/jveljan/cfnmate.git"
+  },
+  "author": "Jovica Veljanovski",
+  "license": "ISC"
+}

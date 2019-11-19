@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+const chalk = require('chalk')
+const program = require('commander')
+const { cfnbuddy } = require('../dist/main')
+
+function parseParams(args) {
+  const rv = {}
+  args.forEach(c => {
+    const kv = c.split('=')
+    rv[kv[0]] = kv[1]
+  })
+  return rv
+}
+
+const additionalOptions = []
+function addAdditioalOption(optionName) {
+  additionalOptions.push(optionName)
+  program.option(`--${optionName} [${optionName}]`, `passing to aws, see docs on aws cli for --${optionName}`)
+}
+
+function getAdditionalOptions() {
+  const rv = []
+  additionalOptions.forEach(optionName => {
+    if (program[optionName] !== undefined) {
+      rv.push('--' + optionName)
+      rv.push(program[optionName])
+    }
+  })
+  return rv
+}
+
+program
+  .version(`cfnmate ${require('../package').version}`, '-v, --version')
+  .usage('<command> [options]')
+
+program
+  .command('deploy <template>')
+  .description('Deploy cloudformation stack template')
+  .action(function (template, cmd) {
+    const params = parseParams(cmd.parent.args)
+    const ovr = {}
+    if (program.debug) {
+      ovr.debug = true
+    }
+    if (program.dryRun) {
+      ovr.dryRun = true
+    }
+    cfnbuddy.cmdDeploy(template, params, getAdditionalOptions(), program.configFile, ovr)
+      .then(console.log)
+      .catch(console.error)
+  })
+// output help information on unknown commands
+program
+  .arguments('<command>')
+  .option('-d, --debug', 'output extra debugging')
+  .option('-c, --config [configFile]', 'select cfnmate config file', 'cfnmate.config.js')
+  //.option('--aws-* [aws-*]', 'pass additional parameters to aws command(s)')
+  .action((cmd) => {
+    program.outputHelp()
+    console.log(`  ` + chalk.red(`Unknown command ${chalk.yellow(cmd)}.`))
+    console.log()
+  })
+
+  addAdditioalOption('endpoint')
+  addAdditioalOption('profile')
+  addAdditioalOption('region')
+
+// add some useful info on help
+program.on('--help', () => {
+  console.log()
+  console.log(`  Run ${chalk.cyan(`cfnmate <command> --help`)} for detailed usage of given command.`)
+  console.log()
+})
+
+program.commands.forEach(c => c.on('--help', () => console.log()))
+
+program.parse(process.argv)
+
+if (!process.argv.slice(2).length) {
+  program.outputHelp()
+}

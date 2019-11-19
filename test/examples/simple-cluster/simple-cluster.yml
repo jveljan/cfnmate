@@ -1,0 +1,11 @@
+Description: ECS cluster
+Parameters:
+  Name:
+    Type: String
+  Env:
+    Type: String
+Resources:
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub "${Name}-${Env}"

@@ -1,0 +1,36 @@
+Description: ECS cluster, LogGroup and TaskExecutionRole
+Parameters:
+  Name:
+    Type: String
+  Env:
+    Type: String
+Resources:
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ecs-tasks.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+        - "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub "${Name}-${Env}"
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub "${Name}/${Env}"
+Outputs:
+  TaskExecutionRole:
+    Description: Task execution role on the cluster
+    Value: !GetAtt ["TaskExecutionRole", "Arn"]
+    Export:
+      Name: !Sub "${Name}-${Env}-taskExecutionRole"
