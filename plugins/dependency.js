@@ -1,7 +1,8 @@
-const { cfnbuddy, loader } = require('../dist/main')
+const { cfnmate, loader } = require('../dist/main')
 
-module.exports = (cfnbuddyTemplateFile, params, cfnbuddyConfigFile, configOverrides) => ({
+module.exports = (cfnmateTemplateFile, params, cfnmateConfigFile, configOverrides) => ({
   beforeDeploy() {
-    return cfnbuddy.cmdDeploy(cfnbuddyTemplateFile, params, [], cfnbuddyConfigFile, configOverrides)
+    console.log(cfnmateTemplateFile, params)
+    return cfnmate.cmdDeploy(cfnmateTemplateFile, params, [], cfnmateConfigFile, configOverrides)
   }
 })

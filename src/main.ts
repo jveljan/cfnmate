@@ -1,6 +1,9 @@
-import * as cfnbuddy from './cfnmate'
+import * as cfnmate from './cfnmate'
 import * as loader from './loader'
+import * as s3util from './s3util'
+
 export default {
-  cfnbuddy,
-  loader
+  cfnmate,
+  loader,
+  s3util
 }

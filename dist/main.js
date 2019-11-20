@@ -7,6 +7,10 @@ var tmpPromise = require('tmp-promise');
 var path = _interopDefault(require('path'));
 var yamlCfn = require('yaml-cfn');
 var child_process = require('child_process');
+var archiver = _interopDefault(require('archiver'));
+var stream = _interopDefault(require('stream'));
+var util = _interopDefault(require('util'));
+var awsSdk = require('aws-sdk');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -245,7 +249,7 @@ function runCfnDeploy(tplData, cfg, parameterOverrides, additionalParams) {
     });
 }
 
-var cfnbuddy = /*#__PURE__*/Object.freeze({
+var cfnmate = /*#__PURE__*/Object.freeze({
     __proto__: null,
     cmdDeploy: cmdDeploy,
     deploy: deploy,
@@ -254,9 +258,55 @@ var cfnbuddy = /*#__PURE__*/Object.freeze({
     runCfnDeploy: runCfnDeploy
 });
 
+function checkFileAccess(path) {
+    return util.promisify(fs.access)(path, fs.constants.F_OK);
+}
+function zipDirToBuffer(dirPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield checkFileAccess(dirPath);
+        return new Promise(resolve => {
+            const chunks = [];
+            const output = new stream.Writable({
+                write(chunk, encoding, next) {
+                    chunks.push(chunk);
+                    next();
+                }
+            });
+            output.on('finish', () => {
+                resolve(Buffer.concat(chunks));
+            });
+            const archive = archiver('zip');
+            archive.pipe(output);
+            archive.directory(dirPath, false);
+            archive.finalize();
+        });
+    });
+}
+const s3 = new awsSdk.S3();
+function zipAndPushToS3(localDir, bucket, key) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('Zipping dir', localDir);
+        const buffer = yield zipDirToBuffer(localDir);
+        console.log('Uploading to S3 bucket', bucket, 'key', key);
+        const req = {
+            Body: buffer,
+            Bucket: bucket,
+            Key: key
+        };
+        return yield s3.putObject(req).promise();
+    });
+}
+
+var s3util = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    zipDirToBuffer: zipDirToBuffer,
+    zipAndPushToS3: zipAndPushToS3
+});
+
 var main = {
-    cfnbuddy,
-    loader
+    cfnmate,
+    loader,
+    s3util
 };
 
 module.exports = main;
