@@ -32,6 +32,11 @@ describe('Unit Tests', () => {
     })
   })
 
+  it('DeployableTemplate.validateWithParams empty success', () => {
+    new CfnTemplate({
+    }).validateWithParams({})
+  })
+  
   it('DeployableTemplate.validateWithParams fail', () => {
     try {
       tpl.validateWithParams({})

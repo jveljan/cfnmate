@@ -37,7 +37,7 @@ export class CfnTemplate {
   validateWithParams(params: any) {
     const isNullOrUndefined = (v: any) => (v === null || v === undefined)
 
-    const missing = Object.keys(this.Parameters)
+    const missing = Object.keys(this.Parameters || {})
       .filter(k =>
         isNullOrUndefined(this.Parameters[k].Default)
         &&
