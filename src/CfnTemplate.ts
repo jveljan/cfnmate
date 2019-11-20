@@ -16,7 +16,7 @@ export class CfnTemplate {
     return this.document.Metadata
   }
   get Parameters(): { [key: string]: CfnTemplateParameter } {
-    return this.document.Parameters
+    return this.document.Parameters || {}
   }
   get Mappings() {
     return this.document.Mappings
@@ -37,7 +37,7 @@ export class CfnTemplate {
   validateWithParams(params: any) {
     const isNullOrUndefined = (v: any) => (v === null || v === undefined)
 
-    const missing = Object.keys(this.Parameters || {})
+    const missing = Object.keys(this.Parameters)
       .filter(k =>
         isNullOrUndefined(this.Parameters[k].Default)
         &&

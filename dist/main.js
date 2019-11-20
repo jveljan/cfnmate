@@ -84,7 +84,7 @@ class CfnTemplate {
         return this.document.Metadata;
     }
     get Parameters() {
-        return this.document.Parameters;
+        return this.document.Parameters || {};
     }
     get Mappings() {
         return this.document.Mappings;
