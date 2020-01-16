@@ -179,7 +179,7 @@ function cmdDeploy(template, inputParams, args, cfmateConfigFile, configOverride
         const doc = new CfnTemplate(tpl);
         const configAbsPath = resolvePathRelativeTo(templateAbsPath, cfmateConfigFile || 'cfnmate.config.js');
         const cfg = loadConfig(configAbsPath, mergedParams(doc, inputParams), configOverrides);
-        return deploy(doc, cfg, inputParams);
+        return deploy(doc, cfg, inputParams, args);
     });
 }
 function deploy(doc, cfg, inputParams, args) {

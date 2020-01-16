@@ -14,7 +14,7 @@ export async function cmdDeploy(template: string, inputParams: any, args?: strin
   const doc = new CfnTemplate(tpl)
   const configAbsPath = resolvePathRelativeTo(templateAbsPath, cfmateConfigFile || 'cfnmate.config.js')
   const cfg = loadConfig(configAbsPath, mergedParams(doc, inputParams), configOverrides)
-  return deploy(doc, cfg, inputParams)
+  return deploy(doc, cfg, inputParams, args)
 }
 
 export async function deploy(doc: CfnTemplate, cfg: CfnMateConfig, inputParams: Dictionary, args?: string[]) {

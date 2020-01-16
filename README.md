@@ -47,7 +47,7 @@ module.exports = ({ Env, Bucket, Version }) => ({
 ```
 Command:
 ```
-cfbuddy deploy my-template.yaml Env=dev Bucket=my-bucket Version=1.0
+cfnmate deploy my-template.yaml Env=dev Bucket=my-bucket Version=1.0
 ```
 
 # Dependency - deploy another stack before yours
